@@ -90,41 +90,10 @@ claude-skills/
 
 ### Skill 开发规范
 
+[官方文档](https://code.claude.com/docs/en/skills)
+
 每个 Skill 应包含：
 - `SKILL.md` - Skill 说明文档（包含 frontmatter）
 - 实现脚本（如 `.sh`、`.py` 等）
 - 清晰的错误处理
 - 用户友好的输出信息
-
-### 目录结构示例
-
-```
-your-skill/
-├── SKILL.md          # Skill 文档
-├── script.sh         # 实现脚本
-└── README.md         # 可选的额外说明
-```
-
-## 技术栈
-
-- Shell Script (Bash)
-- Git
-- Claude Code Agent SDK
-
-## 许可证
-
-MIT License
-
-## 联系方式
-
-如有问题或建议，欢迎：
-- 提交 Issue
-- 发起 Pull Request
-
-## 致谢
-
-感谢 [Anthropic](https://www.anthropic.com/) 提供的 Claude Code 平台。
-
----
-
-使用 Claude Code 构建，让开发更高效。
