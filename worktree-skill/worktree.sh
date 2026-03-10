@@ -174,8 +174,8 @@ main() {
     fi
 
     # 验证分支名格式
-    if [[ ! "$branch_name" =~ ^[a-zA-Z0-9_/-]+$ ]]; then
-        error "Invalid branch name. Use only letters, numbers, hyphens, underscores, and slashes."
+    if [[ ! "$branch_name" =~ ^[a-zA-Z0-9._/-]+$ ]]; then
+        error "Invalid branch name. Use only letters, numbers, hyphens, underscores, dots, and slashes."
     fi
 
     # 检查是否在 git 仓库中
@@ -220,6 +220,21 @@ main() {
     local branch_exists=false
     if git show-ref --verify --quiet "refs/heads/${branch_name}"; then
         branch_exists=true
+    fi
+
+    # 检查分支是否已被其他 worktree 检出
+    if [[ "$branch_exists" == true ]]; then
+        local checked_out_path
+        checked_out_path=$(git worktree list --porcelain | awk -v branch="$branch_name" '
+            /^worktree / { wt=$2 }
+            /^branch refs\/heads\// {
+                b = substr($2, 12)
+                if (b == branch) print wt
+            }
+        ')
+        if [[ -n "$checked_out_path" ]]; then
+            error "Branch '$branch_name' is already checked out in worktree: $checked_out_path\nPlease use a different branch name, or remove that worktree first:\n   git worktree remove \"$checked_out_path\""
+        fi
     fi
 
     # 创建 worktree

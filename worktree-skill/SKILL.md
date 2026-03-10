@@ -1,6 +1,6 @@
 ---
 name: git-worktree-creator
-description: Creates git worktrees for parallel development with automatic naming and branch management. Use when you need a separate working environment for features, hotfixes, or debugging—especially when juggling multiple branches without stashing changes.
+description: 在项目父目录创建规范命名的 git worktree（格式：{项目名}_{分支名}），支持指定基础分支。当用户需要创建 worktree、并行开发、多分支同时工作、或需要独立工作目录来做 feature/hotfix/debug 时使用此 skill。注意：此 skill 与内置 EnterWorktree 不同——它在项目外部创建 worktree 并使用规范命名，适合团队协作场景。
 allowed-tools:
   - Bash
   - Read
@@ -85,7 +85,18 @@ git worktree remove ../my-app_feature-name
 
 ## 注意事项
 
-- 分支名只能包含字母、数字、连字符、下划线和斜杠
+- 分支名只能包含字母、数字、连字符、下划线、点号和斜杠
 - 必须在 git 仓库中执行
 - 父目录必须有写入权限
+
+## 错误处理指引
+
+脚本会自动检测常见错误并给出明确提示。遇到以下场景时，按提示引导用户：
+
+| 错误场景 | 脚本输出 | 建议回应 |
+|---------|---------|---------|
+| 目标目录已存在 | `Directory already exists: ...` | 告知用户该 worktree 可能已创建，建议 `git worktree list` 确认 |
+| 分支已被其他 worktree 检出 | `Branch 'xxx' is already checked out in worktree: ...` | 建议用户换一个分支名，或先移除旧 worktree |
+| 不在 git 仓库中 | `Not in a git repository` | 引导用户先 `cd` 到项目目录 |
+| 分支名格式无效 | `Invalid branch name...` | 提示合法字符范围 |
 
